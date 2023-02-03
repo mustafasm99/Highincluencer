@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from .function import saveOld , masterT
 from datetime import datetime,timedelta
 from datetime import date
-import pytz
+
 
 
 x = datetime.combine(date.today(),datetime.min.time())
