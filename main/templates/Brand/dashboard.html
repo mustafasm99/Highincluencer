@@ -1,0 +1,95 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Brand{%endblock%}
+{%block body%}
+   {{request.user}}
+   <hr>
+   <div class="container-md border p-4 m-auto">
+    <button class="btn btn-dark">
+        <a href="{%url 'CStore'%}" style="text-decoration: none;color:white;">Create Store</a>
+    </button>
+
+    <button class="btn btn-dark">
+        <a href="{%url 'makeoffers'%}" style="text-decoration: none;color:white;">MAKE OFFERS</a>
+    </button>
+    <button class="btn btn-dark">
+        <a href="{%url 'inf'%}" style="text-decoration: none;color:white;">Influencers Discovery</a>
+       </button>
+       <button class="btn btn-dark">
+        <a href="{%url 'itemoffers'%}" style="text-decoration: none;color:white;">STOR OFFERS</a>
+       </button>
+       <button class="btn btn-dark">
+        <a href="{%url 'inv'%}" style="text-decoration: none;color:white;">Invoces</a>
+       </button>
+       <button class="btn btn-dark" onclick="show('cslist')">
+            Create Save List
+       </button>
+       <button class="btn btn-dark">
+        <a href="{%url 'listM'%}" style="text-decoration: none;color:white;">List Management</a>
+   </button>
+   </div>
+   <div class="container-md" id="cslist" style="display:none; width:30%;">
+    <form action="{% url 'csl' %}" method="post">
+        {%csrf_token%}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Title</span>
+            <input type="text" class="form-control" placeholder="Title" aria-label="Title" aria-describedby="basic-addon1" name="title">
+          </div>
+
+          <button type="submit" class="btn btn-dark">
+            Create
+          </button>
+    </form>
+   </div>
+   <div class="container-md">
+    <div>
+        <h1 style="text-decoration: underline;">
+            Request
+        </h1>
+        <div>
+            <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Influencer</th>
+                <th scope="col">Time</th>
+                <th scope="col"> Title </th>
+                <th scope="col"> </th>
+                <th scope="col">State's</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for i in data%}
+                <tr>
+                    <th scope="row">
+                        {%for j in i.influencer.all%}
+                        <a href="{% url 'influencerpage' username=j%}"> {{j}} </a> ,
+                        {%endfor%}
+                    </th>
+                    <td>{{i.time}}</td>
+                    <td>{{i.offer.title}}</td>
+                    <td>
+                        <form action="{% url 'deleteRequest' id=i.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{% url 'accept_request' %}" method="post">
+                            {% csrf_token %}
+                            <input
+                             type="checkbox" name="id" value="{{i.id}}" id="" onchange="submit()" 
+                             {% if i.Accept == True %}
+                             checked
+                             {% endif %}
+                             >
+                        </form>
+                    </td>
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+   </div>
+{%endblock%}

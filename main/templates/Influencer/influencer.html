@@ -1,0 +1,25 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+
+<div class="container-md m-auto my-4 influencer_profile">
+    <div style="margin:0 5px 0 5px;">
+        {%if data.image%}
+        <img src="{{data.image.url}}" alt="">
+        {%endif%}
+    </div>
+    <div style="margin:0 5px 0 5px;">
+        <h1 style="text-decoration: underline;">
+            info
+
+        </h1>
+        <div>
+            <p>user name : {{data.user.username}}</p>
+            <p>followin : {{data.following}}</p>
+            <p>followers : {{data.followers}}</p>
+        </div>
+
+    </div>
+</div>
+{%endblock%}

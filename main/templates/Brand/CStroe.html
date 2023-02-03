@@ -1,0 +1,81 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Create Store{%endblock%}
+{%block body%}
+{% if not flag%}
+<form action="" method="post">
+    {%csrf_token%}
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">@</span>
+        <input name="name" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+    </div>
+    <button type="submit" class="btn btn-dark" name="Create_Stor" value="Create_Stor">
+        Create
+    </button>
+</form>
+{%else%}
+
+
+    <div class="container-md">
+        <div class="gridHolder">
+            {%for i in data%}
+            <div class="items">
+                {% if i.item_image%}
+                    <img src="{{ i.item_image.url }}" alt="" class="Store_image">
+                {%endif%}
+                <div class="info container-md my-1">
+                    {{i.price}}
+                    {{i.name}}
+                </div>
+                <div class="deleteBtn">
+                    <form action="{%url 'deleteitem' id=i.id%}" method="post">
+                        {%csrf_token%}
+                        <button type="submit" class="btn btn-dark">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {%endfor%}
+        </div>
+    </div>
+
+
+    <button class="btn btn-dark my-5" onclick="show('creat_item')">
+        Create Item        
+    </button>
+    <div class="container-md p-4 create_item" id="creat_item" style="display: none;">
+       
+        <form action="" method="post" enctype="multipart/form-data">
+            {%csrf_token%}
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Name</span>
+                <input name="name" type="text" class="form-control" placeholder="name" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            
+            
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Price</span>
+                <input name="price" type="number" step="0.01" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            
+            
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Quintity</span>
+                <input type="number" class="form-control" name="qt" aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            
+            
+
+            <div class="input-group">
+                <input type="file" name="image" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                <button  class="btn btn-outline-secondary" type="button" id="inputGroupFileAddon04">Button</button>
+              </div>
+            <button type="submit" class="btn btn-dark m-auto my-1" name="create_item" value="create_item">
+                Submit
+            </button>
+        </form>
+
+    </div>
+    {%endif%}
+{%endblock%}

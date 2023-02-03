@@ -1,0 +1,15 @@
+{%extends "base.html"%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+<button class="btn btn-dark m-auto my-4">
+    <a href="{% url 'alloffers' %}" class="link" style="text-decoration: none; color:white;">
+        Offers 
+    </a>
+</button>
+<button class="btn btn-dark m-auto my-4">
+    <a href="{% url 'iww' %}" class="link" style="text-decoration: none; color:white;">
+        Items offers 
+    </a>
+</button>
+
+{%endblock%}

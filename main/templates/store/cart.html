@@ -1,0 +1,89 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+<div class="container-md m-auto my-5">
+    {%for j in data.items.all%}
+    <div class="container">
+        {%if j.item_image%}
+        <img src="{{j.item_image.url}}" alt="" class="img-fluid cart-image">
+        {%endif%}
+    </div> 
+    <div>
+      <button onclick="add('qt{{j.id}}')" type="button" class=""> + </button> 
+      <input type="number" name="qt" id="qt{{j.id}}" min="0" class="qtInput" placeholder="1">
+      <button onclick="sub('qt{{j.id}}')" type="button{{j.id}}"> - </button>
+       <br>
+    </div>
+    <div>
+        <form action="" method="post">
+            {%csrf_token%}
+            <button type="submit" name="delete" value="{{j.id}}" class="btn btn-dark my-2">
+                Delete
+            </button>
+        </form>
+    </div>
+    <div class="text-center">
+        <h1>
+            {{j.price}}
+        </h1>
+        <h1>
+            {{j.name}}
+        </h1>
+        <h1>
+            {{j.shop}}
+        </h1>
+    </div>
+    <br><hr>
+    {%endfor%}
+    
+    <button class="btn btn-dark" onclick="show('cout') ,baynow()" id="cdnbtn">
+        bay now 
+      </button>
+      <div class="container-md my-3 m-auto cout" id="cout" style="display: none;"> 
+        
+        <form action="" method="post" id="form">
+            {%csrf_token%}
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Phone Number</span>
+                </div>
+                <input type="text"  name="phone" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              </div>
+
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Email</span>
+                </div>
+                <input name="email" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Location</span>
+                </div>
+                <input name="loc" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Any Note's</span>
+                </div>
+                <input name="note" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              </div>
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">Coupon</span>
+                </div>
+                <input type="text" name="cop" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              </div>
+                {%csrf_token%}
+                <button type="submit" class="btn btn-dark my-3" name="baynow" value="baynow">
+                  Bay Now
+                </button>
+              </form>
+    </div>
+</div>
+    {%endblock%}

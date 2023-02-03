@@ -1,0 +1,76 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}OFFERS{%endblock%}
+{%block body%}
+<div class="message_holder" id="message" style="display: none;">
+        <div class="dot"></div>
+        <div class="message" id="text">
+        </div>
+        <div class="endbtn">
+            <button class="endbtn" id="endbtn">X</button>
+    </div>
+</div>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">Text</th>
+        <th scope="col">Woner</th>
+        <th scope="col">Category</th>
+        <th scope="col">Start Time</th>
+        <th scope="col">End Time</th>
+        <th scope="col"> </th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {%for i in data%}
+        <tr>
+            <th scope="row">{{i.title}}</th>
+            <td>{{i.text}}</td>
+            <td>{{i.woner}}</td>
+            <td>
+                {%for j in i.categorys.all%}
+                    {{j.title}} ,
+                {%endfor%}
+            </td>
+            <td>
+                {{i.startTime}}
+            </td>
+            <td>{{i.endTime}}</td>
+            <td>
+                <form action="{% url 'sendRequest' %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn" id="sendid{{i.id}}" style="text-decoration:underline;">
+                        Send Request
+                    </button>
+                </form>
+                <script>
+                     main = document.getElementById('sendid{{i.id}}')
+                        console.log(main)
+                        main.addEventListener('click',()=>{
+                        console.log('done')
+                        $.ajax({
+                            type:'POST',
+                            url:'{% url "sendRequest" %}',
+                            data:{
+                                'woner':'{{i.woner}}',
+                                'offer':'{{i.id}}',
+                                'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                            },
+                            success:function(){
+                                mess = document.getElementById('message');
+                                mess.style = "display:block;";
+                                text = document.getElementById('text');
+                                txt = document.createElement('p');
+                                txt.innerHTML="you'r Rquest has been send";
+                                text.appendChild(txt);
+                            }
+                        })
+                        })
+                </script>
+            </td>
+          </tr>
+        {%endfor%}
+    </tbody>
+</table>
+{%endblock%}

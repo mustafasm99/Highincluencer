@@ -1,0 +1,149 @@
+{%  extends 'base.html'%}
+{% load static %}
+{% load main_tag %}
+{%block t%}STOR{%endblock%}
+{%block body%}
+{%if user.is_authenticated%}
+    <h1 style="text-decoration:underline ;">
+        ALL ITEMS 
+    </h1>
+    <div class="container-md my-5">
+        <div class="gridHolder">
+            {%for i in data%}          
+                <div class="items" id="item{{i.id}}">
+                    {% if user|type == 'Influencer'%}
+                    <form action="{% url 'mioffer'%}" method="post">
+                        {% csrf_token %}
+                        <button class="btn" name="offer" value="{{i.id}}">
+                            make_offer
+                        </button>
+                    </form>
+                    {%endif%}
+                    {% if i.item_image%}
+                        <img src="{{ i.item_image.url }}" alt="" class="Store_image"  id="{{i.id}}">
+                    {%endif%}
+                    <div class="info container-md my-1">
+                        {{i.price}}
+                        {{i.name}}
+                    </div>
+                    <script>
+                        x = document.getElementById('{{i.id}}').addEventListener('click',()=>{
+                            window.location = "{% url 'sitem' id=i.id%}"
+                        })
+                    </script>
+                </div>
+                <script>
+                    document.getElementById('item{{i.id}}').addEventListener(
+                        "contextmenu",(e)=>{                           
+                            oncontextmenu = (e) => {
+                                item = document.getElementById('item{{i.id}}')
+                                e.preventDefault()
+                                let menu = document.createElement("div")
+                                menu.id = "ctxmenu"
+                                menu.classList.add('ctxmenu')
+                                menu.style = `top:${e.clientY}px;left:${e.clientX}px`
+                                menu.onmouseleave = () => ctxmenu.outerHTML = ''
+                                menu.innerHTML = `
+                                <form method="post" action="{%url 'atc'%}" >
+                                {%csrf_token%}
+                                <input type="number" min="0" name="qt" placeholder="Quintity" style="width:fit-cover;"> 
+                                <button type="submit" class="btn btn-dark" name="item" value="{{i.id}}"> Add To Cart </button> 
+                                    </form>
+                                `
+                                document.body.appendChild(menu)
+                                }
+                        }
+                    )
+                </script>
+            {%endfor%}
+        </div>
+    </div>
+{%else%}
+<h1 style="text-decoration:underline ;">
+    ALL ITEMS 
+</h1>
+<div class="container-md my-5 m-auto gridHolder">
+    {%for i in data%}
+    <div class="items" id="{{i.id}}">
+        {%if i.item_image%}
+        <img src="{{i.item_image.url}}" alt="" class="Store_image">
+        {%endif%}
+        <div class="item-info">
+            <p id="price">{{i.price}}</p>
+            <p>{{i.Name}}</p>
+        </div>
+    </div>
+    <script>
+        count = 0;
+        document.getElementById('{{i.id}}').addEventListener(
+            "click",()=>{
+                if(count == 0){
+                    document.getElementById('{{i.id}}').classList.add('selected')
+                    count++;
+                        }
+                        else{
+                            document.getElementById('{{i.id}}').classList.remove('selected')
+                            count--;
+                        }
+                    }
+                    )
+                    </script>
+        {%endfor%}
+    </div>
+    <div class="container-md m-auto forms">
+        <button class="btn btn-dark" onclick="baynowx(),show('bayform')">
+            bynow
+        </button>
+        <div id="bayform" style="display:none;">
+            <form action="{%url 'byNow'%}" method="post">
+                {%csrf_token%}
+                <div class="gridHolder m-5 " id="sitems">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Email</span>
+                    </div>
+                    <input name="email" type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Full Name</span>
+                    </div>
+                    <input type="text" name="name" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Phone Number</span>
+                    </div>
+                        <input type="text" name="phone" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Location</span>
+                        </div>
+                        <input type="text" name="loc" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Coupon</span>
+                        </div>
+                        <input type="text" name="cop" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                    
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Note</span>
+                </div>
+                <input type="text" name="note" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            
+            <button type="submit" class="btn btn-dark m-auto my-5">submit</button>
+        </div>
+    </form>
+    </div>
+{%endif%}
+    {%endblock%}

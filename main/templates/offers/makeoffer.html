@@ -1,0 +1,129 @@
+{%extends "base.html"%}
+{% load main_tag %}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+<div class="container-md m-auto my-4 form">
+    <form action="" method="post">  
+        {%csrf_token%}
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">TITLE</span>
+            <input name="name" type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        
+        <div class="input-group">
+            <span class="input-group-text">DetailS</span>
+            <textarea class="form-control" aria-label="With textarea" name="text"></textarea>
+        </div>
+
+        <div class="input-group mb-3 my-4">
+            <label class="input-group-text" for="inputGroupSelect01">Category</label>
+            <select class="form-select" id="inputGroupSelect01" name="cat">
+            <option selected>Choose...</option>
+              {%for i in cat%}
+              <option value="{{i.id}}">{{i}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">END TIME</span>
+            <input name="date" type="date" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+
+        <button type="submit" class="btn btn-dark my-5">
+            SubMit
+        </button>
+    </form>
+</div>
+<!-- End of Adding  -->
+<div class="container-md my-4 m-auto">
+    <button class="btn btn-dark" onclick="show('cat')">Create New Category </button>
+    <form action="{%url 'newcat'%}" method="post">
+        {%csrf_token%}
+        <div class="container-md m-auto my-5" style="display:none;" id="cat">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Category Name</span>
+                <input name="Ncat" type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+            </div>
+            
+            <button type="submit" class="btn btn-dark my-5">
+                SubMit
+            </button>
+    </form>
+    </div>
+</div>
+<!-- All offers that this Account Make -->
+<div class="container-md border my-5 m-auto">
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">title</th>
+            <th scope="col">text</th>
+            <th scope="col">end time</th>
+            <th scope="col">Category</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for i in data%}
+            <tr scop="row">
+                <td >{{i.title}}</td>
+                <td>{{i.text}}</td>
+                <td>{{i.endTime}}</td>
+                <td>
+                    {%for j in i.categorys.all%}
+                        {{j}} , 
+                    {%endfor%}
+                </td>
+            </tr>
+            <tr scop="row">
+                <td>
+                    <form action="{%url 'deleteoffer' id=i.id%}" method="post">
+                        {%csrf_token%}
+                        <button type="submit" class="btn btn-dark m-auto mx-1" name="delete" value="delete">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-dark" onclick="show('update')">update</button>
+                </td>
+                <td>
+                    <div style="display: none;" id="update">
+                        <form action="{%url 'updateoffer' id=i.id%}" method="post">
+                            {%csrf_token%}
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">TITLE</span>
+                                <input name="name" type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1" value="{{i.title}}">
+                              </div>
+                              <div class="input-group">
+                                <span class="input-group-text">Details</span>
+                                <textarea  name="text" class="form-control" aria-label="With textarea">
+                                    {{i.text}}
+                                </textarea>
+                              </div>
+                              <div class="input-group mb-3 my-4">
+                                <span class="input-group-text" id="basic-addon1">END TIME</span>
+                                <input id="date" value="{{i.endTime | replace:','}}" name="date" type="date" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                            </div>
+
+                            <div class="input-group mb-3 my-4">
+                                <label class="input-group-text" for="inputGroupSelect01">Category</label>
+                                <select class="form-select" id="inputGroupSelect01" name="cat">
+                                <option selected>{{i.categorys.first}}</option>
+                                  {%for k in cat%}
+                                  <option value="{{k.id}}">{{k}}</option>
+                                  {%endfor%}
+                                </select>
+                              </div>
+
+                              <button type="submit" class="btn btn-dark m-auto my-5">
+                                Submit
+                              </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+</div>
+    {%endblock%}

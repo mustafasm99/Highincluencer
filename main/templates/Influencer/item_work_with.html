@@ -1,0 +1,46 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+<div class="container-md m-auto my-5 itemwt">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">image</th>
+                <th scope="col">price</th>
+                <th scope="col">Time</th>
+                <th scope="col">State</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {%for i in data%}
+            <tr>
+                <th>{{i.s_item.name}}</th>
+                <td>
+                    {%if i.s_item.item_image%}
+                     <img src="{{i.s_item.item_image.url}}" alt="" class="thmpimage">
+                    {%endif%}
+                </td>
+                <td>{{i.s_item.price}}</td>
+                <td>{{i.time}}</td>
+                {%if i.accept == False%}
+                <td>
+                     <p >
+                        Under Reviews 
+                     </p>
+                </td>
+                 {%else%}
+                 <td>
+                     <p style="text-decoration:underline ;">
+                        Done Check Your Email
+                    </p>
+                    <a href="{% url 'Sitem' id=i.s_item.id code=i.influencer.code%}" style="color:black;">GenrateLink</a>
+                </td>
+                 {%endif%}
+            </tr>
+            {%endfor%}
+            </tbody>
+        </table>
+    </div>
+{%endblock%}

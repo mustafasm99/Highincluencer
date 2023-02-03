@@ -1,0 +1,41 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Brand-Invoces{%endblock%}
+{%block body%}
+<div class="container-md my-5 p-5">
+
+    <table class="table">
+        <thead class="table-dark">
+      <tr>
+          <th scope>id</th>
+          <th>name</th>
+          <th>phone number</th>
+          <th>email</th>
+          <th>location</th>
+          <th>copon</th>
+          <th>quantity</th>
+          <th>total price</th>
+          <th>not</th>
+          <th>Item</th>
+        </tr>
+    </thead>
+    <tbody>
+        {%for i in data%}
+      <tr>
+          <td>{{i.id}}</td>
+          <td>{{i.name}}</td>
+          <td>{{i.phone_number}}</td>
+          <td>{{i.email}}</td>
+          <td>{{i.locathion}}</td>
+          <td>{{i.copone.code}}</td>
+          <td>{{i.quantity}}</td>
+          <td>{{i.total_price}}</td>
+          <td>{{i.note}}</td>
+          <td>{{i.xitem}}</td>
+        </tr>
+        {%endfor%}
+    </tbody>
+</table>
+</div>
+
+{%endblock%}

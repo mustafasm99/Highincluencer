@@ -1,0 +1,35 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Login{%endblock%}
+{%block body%}
+<div class="container-md border m-auto my-2 p-4 loginpage">
+    {%if request.user.is_authenticated %}
+        <h1>
+            you in 
+        </h1>
+        <button class="btn btn-dark">
+            <a href="{%url 'logout'%}">Logout</a>
+        </button>
+    {%else%}
+
+        <div class="container-md border p-3">
+            <form action="" method="post">
+                {%csrf_token%}
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                    <input name="username" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                    <input name="password" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+                <button type="submit" class="btn btn-dark">
+                    Submit
+                </button>
+            </form>
+        </div>    
+
+    {%endif%}
+</div>
+{%endblock%}

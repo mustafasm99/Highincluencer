@@ -1,0 +1,25 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+<div class="container-md my-5 mx-auto p-3">
+    {%if data.item_image%}
+        <div class="container-fluid">
+            <img src="{{data.item_image.url}}" alt="" class="img-fluid">
+        </div>
+    {%endif%}
+    <div class="container-md">
+        <h1>
+            <hr>
+            {{data.name}} <br>
+            {{data.price}} <br>
+            {{data.shop}} <br>
+            {%for i in data.categorys.all%}
+                {{i}} ,
+            {%endfor%}
+            <br>
+            <hr>
+        </h1>
+    </div>
+</div>
+{%endblock%}

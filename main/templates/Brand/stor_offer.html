@@ -1,0 +1,55 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Brand{%endblock%}
+{%block body%}
+<style>
+    .thmpimage{
+    width:100px;height: 100px;border-radius: 50%;
+}
+</style>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Influencer</th>
+        <th scope="col">image</th>
+        <th scope="col">ITEM</th>
+        <th scope="col">info </th>
+        <th scope="col">TIME</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        {%for i in data%}
+        <tr>
+            <th scope="row">
+                <a href="{% url 'influencerpage' username=i.influencer%}"> {{i.influencer}} </a>
+            </th>
+            <td>
+                {%if i.influencer.image%}
+                <img src="{{i.influencer.image.url}}" alt="" class="thmpimage">
+                {%endif%}
+            </td>
+            <td>{{i.s_item}}</td>
+            <td>
+                {%if i.s_item.item_image%}
+                <img src="{{i.s_item.item_image.url}}" alt="" class="thmpimage">
+                {%endif%}
+                <p>price:{{i.s_item.price}}</p>
+            </td>
+            <td>
+                {{i.time}}
+            </td>
+            <td>
+                <form action="" method="post">
+                    {%csrf_token%}
+                    <input 
+                    type="checkbox" name="id" value="{{i.id}}" id="" onchange="submit()"
+                    {% if i.accept == True %}
+                             checked
+                    {% endif %}
+                             >
+                </form>
+            </td>
+        </tr>
+        {%endfor%}
+    </tbody>
+{%endblock%}

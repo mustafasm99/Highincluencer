@@ -1,0 +1,20 @@
+{%load static%}
+{% load main_tag %}
+{%block t%}Erorr{%endblock%}
+<body>
+    <div class="endbtn">
+        <button class="hidtoolib" onclick="hidtoolib()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+<div class="container-md mx-auto my-auto m-auto">
+    <div class="container-md m-auto">
+        
+        <h1>
+            Error You'r Not loged in <a href="{%url 'login'%}">Log In</a>
+        </h1>
+    </div>
+</div>
+</body>
+{%block body%}
+{%endblock%}

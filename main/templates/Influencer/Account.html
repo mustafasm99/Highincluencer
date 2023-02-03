@@ -1,0 +1,72 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Dashbord{%endblock%}
+{%block body%}
+
+<div class="container-md my-2 p-2">
+  <div class="container">
+    <div class="right-page">
+      <hr class="hr-new">
+      <div class="right-of-page">
+        <div class="right-middle">              
+        <div class="featured">
+          <div class="featured-body">
+                <div class="galery-wrapper">
+                  {%for i in post%}
+                  <div class="post-image">
+
+                    <div class="img-galery">
+                      <img src="{{i.media.url}}" />
+                    </div>
+                    <div class="post-info" style="display:inline-flex">
+                      <p>
+                        <i class="fa-solid fa-heart heart"></i>{{i.like}}
+                      </p>  
+                      <p>
+                        <i class="fa-solid fa-comment comment"></i> {{i.comment_count}}
+                      </p> 
+                    </div>
+                    <div class="caption">
+                      <p>
+                        {{i.caption}}
+                      </p>
+                    </div>
+                  </div>
+                    {%endfor%}
+                </div>
+            </div>
+          </div>   
+        </div>
+        <div class="last-right">
+          {%if data.image%}
+          <img src="{{data.image.url}}" />
+          {%endif%}
+          <h2 class="name2">{{data.user}}</h2>
+          <p class="name2">{{data.text}}</p>
+          <div class="follows"> 
+            <div class="post">
+              <p>Followers</p>
+              <div class="post-num">{{data.followers}}</div>
+            </div>
+            <div class="post">
+              <p>Following</p>
+              <div class="post-num">{{data.following}}</div>
+            </div>
+          </div>
+          <div class="update-btn">
+            <form action="{%url 'updateInf'%}" method="post">
+              {%csrf_token%}
+              <button type="submit" class="btn btn-dark">
+                UPDATE
+              </button>
+            </form>
+            <button class="btn btn-dark m-3">
+              <a href="{%url 'an' data.id%}" class="link">Analysis</a>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+{%endblock%}

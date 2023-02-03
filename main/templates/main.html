@@ -1,0 +1,40 @@
+{%  extends 'base.html'%}
+{% load static %}
+{%block t%}Main{%endblock%}
+{%block body%}
+
+<div>
+    {%if request.user.is_authenticated%}
+       <h1>
+            {{d1}} - {{d2}} - {{request.user}}
+       </h1>
+    {%endif%}
+</div>
+
+<div class="container-md border m-auto my-2 p-4 loginpage">
+    <button class="btn btn-dark">
+        <a href="{%url 'login'%}">Log in</a>
+    </button>
+    {%if d2 != none%}
+        <button class="btn btn-dark">
+            <a href="{%url 'branddashboard'%}">Dashboard</a>
+        </button>
+    {%endif%}
+    
+</div>
+<hr>
+<button class="btn btn-dark">
+    <a href="{%url 'inf'%}">Influncer discovery</a>
+</button>
+<button class="btn btn-dark">
+    Create Influncer
+</button>
+<button class="btn btn-dark">
+    Create Brand
+</button>
+<button class="btn btn-dark">
+    <a href="{%url 'stor'%}" style="color:white;text-decoration: none;">
+         STORE </a>
+</button>
+
+{%endblock%}
