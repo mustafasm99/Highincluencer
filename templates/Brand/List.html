@@ -1,0 +1,187 @@
+
+{% load static %}
+<header>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{%static 'js/main.js'%}"></script>  
+</header>
+<div id="listdata">
+    <div class="listheader center drad" style="text-align: center;width:50%; margin:0 auto;">
+        <h1>
+            {{data.title}}
+        </h1>
+    </div>
+
+    <div class="flex" style="justify-content:space-around; margin:10%;">
+        <div class="dataholder rud">
+
+            <div class="listheader ">
+                <h3>
+                    Accounts
+                </h3>
+            </div>
+
+
+            <div>
+                <p>
+                    {{data.get_Account_data.Accounts}}
+                </p>
+            </div>
+        </div>
+        <div class="dataholder rud">
+            <div class="listheader">
+                <h3>
+                    Total follwers
+                </h3>
+            </div>
+            <div>
+                <p class="numx">
+                    {{data.get_Account_data.all}}
+                </p>
+            </div>
+        </div>
+
+
+        <div class="dataholder rud">
+            <div class="listheader">
+                <h3>
+                    Avg. engagment
+                </h3>
+            </div>
+            <div>
+                <p class="numfex">
+                    {{data.get_Account_data.avg}}%
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="infltable rud">
+        <table style="width:fit-content;">
+            <thead class="listheader" >
+                <tr>
+                    <th> <input type="checkbox" name="selectAll" id="selectAll" onclick="check()" class="selectAll"> </th> <th>Account</th> <th>Follwers</th> <th>ER</th> <th>Request</th> <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="delrq" id="delrq"> 
+                    <th colspan="3" class=""> 
+                    <button id="deleteSelecting" onclick="deletes()">Delete</button>
+                    </th> 
+                    <th colspan="3" class="">
+                        <button id="deleteSelecting" onclick="request()">Request</button>
+                     </th>   
+                </tr>
+                {%for i in data.get_Account_data.infs%}
+                    <tr>
+                        <td> 
+                            <input type="checkbox" name="selectAll" class="selected" value="{{i.id}},{{data.id}}">  
+                        </td>
+                        <td> 
+                            <!-- image -->
+
+                           <div class="flex" style="justify-content:space-between;flex:50%;">
+                                <div class="crclimage">
+                                    {%if i.image%}
+                                        <img src="{{i.image.url}}" alt="" class="crclimag">
+                                    {%endif%}
+                                </div>
+
+                                <div style="text-align: center;flex:50%; margin:auto;">
+                                    <p>{{i.user.first_name}}</p> 
+                                    <p>{{i.user}}</p>
+                                </div>
+                           </div> 
+
+
+                        </td>
+                        <td> <p class="mumx">{{i.followers}}</p></td>
+                        <td> 
+                            <div class="flex" style="text-align:center;">
+                                <p class="numfex"> {{i.engagemantRate}}</p> %
+                            </div>
+                        </td>
+                        <td>  
+                            <form action="" method="post">
+                                {%csrf_token%}
+                                <button type="submit" name="id" value="{{i.id}}">Request</button>
+                            </form>    
+                        </td>
+                        <td> 
+                            <form action="" method="post">
+                                {%csrf_token%}
+                                <button type="submit" name="deleteOne" value="{{i.id}},{{data.id}}">X</button>
+                            </form>
+                        </td>
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+    </div>
+
+
+    <!--
+        
+        
+        js
+    
+    
+    
+    
+    -->
+    <script>
+        numfex = document.getElementsByClassName('numfex')
+        Array.from(numfex).forEach((i)=>{
+        number = parseFloat(i.innerHTML).toFixed(2)
+        i.innerHTML = number
+        })
+
+        numx = document.getElementsByClassName('numx')
+        ar = Array.from(numx).forEach((i)=>{
+        number = parseFloat(i.innerHTML)
+            if (number > 1000){
+            i.innerHTML = ``+Math.floor(number/1000)+'K'
+            }
+            else if(number > 1000000){
+            i.innerHTML = ``+Math.floor(number/1000000)+'M'
+            }
+        })
+
+        flag = false;
+        function check(){
+            box = document.getElementsByClassName('selected')
+            if(!flag){
+                Array.from(box).forEach((e)=>{
+                    e.checked = true;
+                })
+                flag=true
+            }else{
+                Array.from(box).forEach((e)=>{
+                    e.checked = false;
+                })
+                flag=false
+            }
+        }      
+        
+
+        delrq = document.getElementById('delrq')
+        box = document.querySelectorAll('.selected, .selectAll')
+        Array.from(box).forEach((e)=>{
+            e.addEventListener('change',()=>{
+                for(i=0;i<box.length;i++){
+                    if(box[i].checked){
+                        delrq.style = 'display:table-row;'
+                        return
+                    }else{
+                        delrq.style = 'display:none;'
+                    }
+                }
+                
+            })
+        })
+        
+
+
+
+    </script>
+</div>
+<script src="{%static 'js/main.js'%}"></script>    

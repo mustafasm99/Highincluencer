@@ -1,5 +1,6 @@
-from asyncio.windows_events import NULL
-from django.shortcuts import render
+#!
+#! for telegram api bot 
+from django.shortcuts import render , redirect
 from django.contrib.auth.models import User 
 from .models import *
 import requests
@@ -60,17 +61,26 @@ def main(e,*args,**kwargs):
 
 ## main function for Descovery ## 
 def Influencer_descovery(e):
-    inf = Influencer.objects.all()
-
+    inf = Influencer.objects.filter(Active = True).all()
+    if e.method == 'POST':
+        if e.POST.get('search' , 'none') != 'none':
+            print(e.POST['dissearch'])
+            return redirect('search' , e.POST['dissearch'])
     try:
         brand = Brand.objects.get(user = e.user)
         list = saveInfluncer.objects.filter(brand = brand).all()
-    except:
-        list = "none"
-    if e.method == 'GET':
+        if e.method == 'GET':
             return render(e,'influencer/main.html',{
             "data":inf,
             "list":list,
+            })
+        
+    except:
+        list = []
+    if e.method == 'GET':
+            return render(e,'influencer/main.html',{
+            "data":inf,
+            # "list":list,
             })
     else:
         if e.POST.get('most','none') != 'none':
@@ -93,7 +103,6 @@ def influencer(e):
     try:
         brand = Brand.objects.get(user = e.user)
         slist = saveInfluncer.objects.filter(brand = brand).first()
-        print(brand,slist,"hello")
         return render(e,"influencer/main.html",{
             "data":users,
             "list":slist,

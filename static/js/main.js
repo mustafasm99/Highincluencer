@@ -11,7 +11,7 @@ function show(id){
     }
     
 }
-
+// show div if it hide 
 function fade(element) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
@@ -24,7 +24,7 @@ function fade(element) {
         op -= op * 0.1;
     }, 50);
 }
-
+// add blure efect 
 function getOffset(el) {
     const rect = el.getBoundingClientRect();
     return {
@@ -32,58 +32,90 @@ function getOffset(el) {
       top: rect.top + window.scrollY
     };
   }
-  
-  function add(id){
-   document.getElementById(id).value++
-  }
-  function sub(id){
-    if (document.getElementById(id).value != 0){
-        document.getElementById(id).value--;
-    }
-  }
-  
-  function baynowx(){
-    items = document.getElementsByClassName('selected');
-    sitems = document.getElementById('sitems');
-    Array.from(items).forEach(el=>{
-      el.classList.add('items');
-      sitems.appendChild(el);
-      // el.classList.remove('selected');
-      el.style=`
-      overflow-y: scroll;
-      `
-      div = document.createElement('div');
-      el.appendChild(div);
-      input = document.createElement("input");
-      input.type = "hidden";
-      input.name = "item";
-      input.value = el.id;
-      el.appendChild(input)
+// get pos of in el
+  function qt(e , number ,tid){
+    price = document.getElementById(tid)
+    nprice = parseFloat(number).toFixed(2);
+    tprice = e*nprice
+    price.value = tprice.toFixed(2)
 
-      input = document.createElement('input');
-      input.type = "number";
-      input.min = "0";
-      input.placeholder = "Quantity";
-      input.name = "qt";
-      input.id = "qt";
-      div.appendChild(input);      
-    })
+    prices = document.getElementsByClassName('price')
+    total = 0.0
+    Array.from(prices).forEach((i)=>{
+      total += parseFloat(i.value)
+   })
+   sum = 0.0
+   document.getElementById('items').innerHTML = total+" IQD"
+   shipping = document.getElementsByClassName('shipping')
+   Array.from(shipping).forEach((e)=>{
+    if(shipping.length <= 1){
+      sum = total + parseFloat(e.innerHTML) 
+    }else{
+      if(e.checked){
+        sum = total +parseFloat(e.value)
+      }
+    }
+   })
+   document.getElementById('total').innerHTML = sum
+}
+// clc total price and replace it 
+
+function add(id , price ,to){
+  main = document.getElementById(id)
+  main.value++
+  qt(main.value,price , to)
+}
+function sub(id , price ,to){
+  main = document.getElementById(id)
+  if (main.value != 0){
+      main.value--;
   }
+  qt(main.value , price, to)
+}
+// two btns for add sub the qt in orderds 
+function baynowx(){
+  items = document.getElementsByClassName('selected');
+  sitems = document.getElementById('sitems');
+  Array.from(items).forEach(el=>{
+    el.classList.add('items');
+    sitems.appendChild(el);
+    // el.classList.remove('selected');
+    el.style=`
+    overflow-y: scroll;
+    `
+    div = document.createElement('div');
+    el.appendChild(div);
+    input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "item";
+    input.value = el.id;
+    el.appendChild(input)
+
+    input = document.createElement('input');
+    input.type = "number";
+    input.min = "0";
+    input.placeholder = "Quantity";
+    input.name = "qt";
+    input.id = "qt";
+    div.appendChild(input);      
+  })
+}
+// get items ready to buy if the user not loged in or not have cart 
 
 
 
 function baynow(){
-  x = document.getElementsByClassName('qtInput')
-  y = document.getElementById('form')
-  Array.from(x).forEach(i=>{
-    input = document.createElement('input')
-    input.type="hidden"
-    input.name="qt"
-    input.value=i.value
-    y.appendChild(input)
-  })
+x = document.getElementsByClassName('qtInput')
+y = document.getElementById('form')
+Array.from(x).forEach(i=>{
+  input = document.createElement('input')
+  input.type="hidden"
+  input.name="qt"
+  input.value=i.value
+  y.appendChild(input)
+})
 }
-// slider 
+// finish the bay method 
 
 
 // for table numbers 
@@ -149,10 +181,10 @@ function showmore(id,cx,showmorebtn){
   }
   
 }
-
+// for any larg data 
 //  end of show more function
 hidflag = true
-
+// controll the nav bar 
 function Move(){
   sectionsel = document.querySelectorAll('section')
   mainnav = document.getElementById('nv')
@@ -176,7 +208,7 @@ function Back(){
   mainnav.classList.add('nvmoveBack');
 
 }
-// moving the lime 
+// moving the lime -> to controll the animation on the main page 
 function linemove(){
   lines = document.querySelectorAll('.center_to_first');
   Array.from(lines).forEach((e)=>{
@@ -410,6 +442,11 @@ ar = Array.from(numx).forEach((i)=>{
     }
 })
 
+numfex = document.getElementsByClassName('numfex')
+Array.from(numfex).forEach((i)=>{
+  number = parseFloat(i.innerHTML).toFixed(2)
+  i.innerHTML = number
+})
 
 // function slowhidenav(){
 //   console.log('hi')
@@ -420,3 +457,142 @@ ar = Array.from(numx).forEach((i)=>{
   
 // }
 // document.getElementById('popup').addEventListener('scroll',slowhidenav)
+
+
+
+function deletes(){
+  data=[]
+  selected = document.getElementsByClassName('selected')
+  Array.from(selected).forEach((i)=>{
+      if(i.checked){
+          list = i.value.split(',')
+          data.push(list)
+      }
+  })
+  data.forEach((e,index)=>{
+          
+              infl = data[index][0]
+              list = data[index][1]
+              $.ajax({
+                  type:'get',
+                  url:`deleteFromList/${list},${infl}`,
+                  data: {
+                      'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                  },success:()=>{
+                      location.reload();
+                  }
+              })
+          
+  })
+}
+
+function request(){
+  data=[]
+selected = document.getElementsByClassName('selected')
+Array.from(selected).forEach((i)=>{
+  if(i.checked){
+      list = i.value.split(',')
+      data.push(list)
+  }
+})
+data.forEach((e,index)=>{
+
+  infl = data[index][0]
+  list = data[index][1]
+  $.ajax({
+      type:'POST',
+      url:`RequestInfluncer`,
+      data: {
+          'id':infl,
+          'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+      },success:()=>{
+          location.reload();
+      }
+  })
+
+})
+}
+// ajax request to selected items
+
+
+if(document.getElementById('aside')){
+  main = document.querySelector('.actions')
+  lis = main.querySelectorAll('li')
+  Array.from(lis).forEach((e)=>{
+    e.addEventListener('click' , ()=>{
+      Array.from(lis).forEach((e)=>{
+        if(e.classList.contains('clicked')){
+          e.classList.remove('clicked')
+        }
+      })
+    })
+  })
+  
+  
+  
+  Array.from(lis).forEach((e)=>{
+    e.addEventListener('click' , ()=>{
+      e.classList.add('clicked')
+    })
+  })
+}
+// aside moving 
+// to change the image size in edite logo page 
+
+function imagesize(id){
+  var dataurl
+  image = document.getElementById(id)
+  input = document.getElementById('range')
+  if(input.value < 50){
+    input.value = 50
+  }else if(input.value > 150){
+    input.value = 150
+  }
+  // image.style.width = input.value + "px"
+  // image.style.height = input.value + "px"
+  input.oninput = function(){
+    const canv = document.createElement('canvas')
+    const ctx = canv.getContext('2d')
+    canv.width = input.value
+    canv.height = input.value
+    
+    ctx.drawImage(image ,0 ,0)
+    var dataurl = canv.toDataURL('image/jpeg' , 1.0)
+    image.src = dataurl
+    
+    
+
+    input.onchange = function(){
+      setTimeout(() => {
+        // console.log(image , image.files[0])
+        img = image.files
+  
+        const formData = new FormData()
+        formData.append('logo', dataurl)
+        console.log(img , dataurl)
+        $.ajax({
+          url: '/log',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          headers: {
+            'X-CSRFToken': $('#form input[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function(response) {
+            console.log('Image uploaded successfully');
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+          },
+        });
+        console.log("done")
+      }, 1000);
+    }
+
+  }
+
+  
+}
+
+// resizeing the image and save it in db 

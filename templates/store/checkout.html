@@ -1,0 +1,84 @@
+{%extends "base.html"%}
+{%load static%}
+{%block t%}Check Out{%endblock%}
+{%block body%}
+<div class="container-md p-5">
+    <form action="" method="post">
+        {%csrf_token%}
+        <div class="center">
+            <div class="shadow p-5 rud center" style="text-align: center;width:100%;">
+                <p>Discount code</p>
+                <div class="pinholder" style="text-align: center;width:80%; margin:0 auto;">
+                    <button class="Abtn">Active</button>
+                    <input type="text" class="pincode rud shadow" placeholder="discount code" name="cop"> 
+                </div>
+            </div>
+            <div class="shadow rud p-5 my-5 container-md">
+                <div class="center" style="text-align : center;">
+                    <h2>
+                        معلومات تثبيت الطلب 
+                    </h2>
+                </div>
+                <div class="formHolder">
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    الاسم الكامل 
+                                </p>
+                            </label>
+                            <input type="text" class="pininput shadow" placeholder="ادخل الاسمك الكامل " name="name">
+                        </div>
+                    
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    رقم الهاتف 
+                                </p>
+                            </label>
+                            <input type="phone" class="pininput shadow" placeholder="ادخل رقم الهاتف " name="phone">
+                        </div>
+                    
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    ايميل 
+                                </p>
+                            </label>
+                            <input type="email" class="pininput shadow" placeholder=" يجب ان يكون ايميل فعال لتستلم تفاصيل الطلب  " name="email">
+                        </div> 
+
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    مدينة السكن
+                                </p>
+                            </label>
+                            <input type="text" class="pininput shadow" placeholder="ادخل مدينة السكن الحاليه " name="city">
+                        </div>
+                    
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    عنوان السكن 
+                                </p>
+                            </label>
+                            <input type="text" class="pininput shadow" placeholder="ادخل عنوان السكن الحالي " name="current_city">
+                        </div>
+                    
+                        <div class="inputHolder">
+                            <label for="name">
+                                <p>
+                                    ملاحضات
+                                </p>
+                            </label>
+                            <input type="text" class="pininput shadow" placeholder="في حال لديك اي ملاحضات,اكتبها هنا" name="note">
+                        </div>  
+                        <div style="text-align: center;">
+                            <button type="submit" class="Abtn" name="bynow" value="true">submit</button>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
+{%endblock%}

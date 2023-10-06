@@ -7,8 +7,11 @@ from datetime import datetime
 from django.core.files.base import ContentFile
 from app.views import telem
 
+# 
+# the function for save the data from the api 
+#
+
 def saveOld():
-       
     #update users data 
     infl = Influencer.objects.all()
     for user in infl:

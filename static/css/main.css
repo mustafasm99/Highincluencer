@@ -11,17 +11,26 @@
     font-family: mainFont-light;
     src: url(../font/Almarai-Light.ttf);
 }
+@font-face {
+    font-family: mainFont-req;
+    src:url(../font/Almarai-Regular.ttf);
+}
 :root{
     --shadow:0px 0px 8px 1px rgba(0, 0, 0, 0.25);
     --rounded:30px;
     --num-cols:3;
+    --subcolor:#d35252;
+    --subcolorBlue:#282F48;
+    --textColor:#f2f2f2;
 }
 .exbold{
     font-family: mainFont-bold;
 }
 /* Bradn creat items */
-body{
+html,body{
     background-color: #f2f2f2;
+    height: 100%;
+    margin:0;
 }
 .create_item{
     background-color: rgb(225, 225, 225);
@@ -112,13 +121,32 @@ body{
     color:white;
 }
 .message_holder{
-    width:fit-content;
-    border: 1px solid black;
-    box-shadow: 0px 1px 2px 1px black;
-    border-radius: 5px;
-    margin:10px;
+    z-index: -1;
+    width: 100%;
+    margin:0 auto;
+    padding:10px;
+    display:block;
+    text-align: center;
 }
-
+.messagebtn button{
+    border:none;
+    outline:none;
+    background-color: transparent;
+   position: relative;
+}
+.dot{
+    width:5px;
+    height: 5px;
+    background-color: greenyellow;
+    border-radius: 50% 50%;
+}
+.message{
+    box-shadow: var(--shadow);
+    border-radius: var(--rounded);
+    width:50%;
+    margin:0 auto;
+    padding:5px;
+}
 .influencer_profile{
     display: inline-flex;
     width:fit-content;
@@ -1782,7 +1810,9 @@ body{
     position: absolute;
     margin: -5px -5px;
     width:100px;
-    height: fit-content;
+    height:max(150px);
+    overflow-y: scroll;
+    overflow-x: hidden;
     padding:10px;
     border-radius: var(--rounded);
     background-color: #D45252;
@@ -1790,6 +1820,20 @@ body{
     z-index: 1;
     text-align: left;
     display: none;
+}
+.savelist::-webkit-scrollbar{
+    width:5px;
+    height:90%;
+    position: relative;
+    left: -10px;
+    background-color: white;
+    display: none;
+}
+.savelist::-webkit-scrollbar-thumb{
+    height: 10%;
+    width:100%;
+    background-color: #282F48;
+    border-radius: 5px;
 }
 .savelist:hover{
     display: block;
@@ -1809,6 +1853,455 @@ body{
     outline: none;
     background-color: transparent;
     color:#f2f2f2
+}
+.rud{
+    border-radius: var(--rounded);
+}
+/* Aside for manage list */
+.aside{
+    position: fixed;
+    width:20%;
+    height: 92%;
+    border-bottom-right-radius: 20px;
+    /* border:1px solid black; */
+    box-shadow: var(--shadow);
+}
+.listheader{
+    width: 100%;
+    padding:10px;
+    margin: 0;
+    background-color: #d35252;
+    color:#f2f2f2;
+}
+.listHolder{
+    margin:10% auto;
+    height: 50%;
+    overflow-y: scroll;
+}
+.listHolder::-webkit-scrollbar{
+    width: 10px;
+}
+.listHolder::-webkit-scrollbar-thumb{
+    width:100%;
+    height: 20%;
+    background-color: #898d9a;
+    border-radius: 5px;
+}
+.flex{
+    display: flex;
+    flex-wrap:wrap;
+}
+.listHolder ul{
+    list-style-type: none;
+    /* margin: auto; */
+}
+.listHolder li{
+    width:80%;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    margin:20px  0px;
+    border-radius: var(--rounded);
+    padding:5px 10px;
+    font-size: 20px;
+    color:#d35252;
+    /* text-align: center; */
+}
+.listHolder h5:hover{
+    cursor:pointer;
+}
+.listHolder  button{
+    background-color: transparent;
+    outline:none;
+    border:none;
+}
+.submenu{
+    display: none;
+    position: absolute;
+    width: fit-content;
+    height: fit-content;
+    padding: 10px;
+    box-shadow: var(--shadow);
+    border-radius: var(--rounded);
+    background-color: #f2f2f2;
+    margin-top: -5px;
+}
+.submenu button{
+    background-color: transparent;
+    outline:none;
+    border:none;
+}
+.subbtn:hover .submenu{
+    display: block;
+}
+
+.addList{
+    width:90%;
+    margin: 0  auto;
+    text-align: center;
+    justify-content: space-between;
+    
+}
+.addList div{
+    margin: auto;
+}
+.addList i{
+    font-size: 25px;
+    color:#d35252;
+}
+
+.input input{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border-bottom: 1px black solid;
+}
+/* place for the list */
+.mainlist{
+    position: relative;
+    margin-left:20%;
+    width: 80%;
+
+}
+.drad{
+    border-bottom-right-radius:80px;
+    border-bottom-left-radius:80px ;
+}
+
+.dataholder{
+    border-radius: var(--rounded);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    width:245px;
+    height: 165px;
+    text-align: center;
+}
+
+.dataholder p{
+    width: fit-content;
+    height: fit-content;
+    margin: 20px;
+    position: relative;
+    /* left:50%; */
+    
+    font-size:50px;
+}
+#listdata{
+    height: 100%;
+}
+
+/* influncer table in save lists  */
+
+.infltable{
+    justify-content:space-around;
+    margin:10%;
+    width: fit-content;
+    border-radius: var(--rounded);
+    overflow: hidden;
+}
+
+.delrq{
+    border-bottom: 1px solid black;
+    /* display: flex; */
+}
+.delrq{
+    display: none; 
+   
+}
+
+.crclimage{
+    width:150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.crclimage img{
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+.infltable{
+    box-shadow: var(--shadow);
+}
+
+.infltable td{
+    text-align: center;
+    margin:15px;
+    width:fit-content;
+    /* border:1px solid black; */
+}
+
+.infltable button{
+    background-color: transparent;
+    border:none;
+}
+.infltable button:hover{
+    color:#D45252;
+}
+
+.selected ,.selectAll{
+    width: 25px;
+    height: 25px;
+    border-radius: 15px;
+    border: none;
+    outline:none;
+    border-radius: 1em;
+    transform: translateY(-0.075em);
+    /* box-shadow: var(--shadow); */
+}
+.preas{
+    box-shadow:none;
+    border: 0.1px solid #d35252;
+    
+}
+.itemincart{
+    width:100%;
+    margin:30px auto;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    padding:20px;
+    height:fit-content;
+    text-align: center;
+}
+.cartimage{
+    width:160;
+    height: 142px;
+    border-radius: var(--rounded);
+    object-fit: cover;
+    margin:5px 5px
+}
+.sb{
+    justify-content: space-between;
+}
+.cartButton{
+    padding:5px;
+    margin:10px;
+    justify-content: center;
+    background-color:var(--subcolor);
+    border-radius: var(--rounded);
+}
+.cartButton input{
+    width:max(30px);
+    outline: none;
+    border:none;
+    background-color: transparent;
+    color:white;
+    text-align: center;
+    font-size:20px;
+    
+}
+.cartButton input::placeholder{
+    color:white;font-size: 20px;
+}
+.cartButton input[type=number]::-webkit-inner-spin-button{
+    -webkit-appearance: none;
+    margin: 0;
+    display: none;
+}
+.cartButton button{
+    background-color: transparent;
+    color:white;
+    font-size:20px;
+    border:none;
+    outline:none;
+}
+.Abtn{
+    background-image:linear-gradient(to right , #282F48 , #d35252);
+    font-size: 25px;
+    border: none;
+    outline:none;
+    border-radius: 55px;
+    color:#f2f2f2;
+    padding:20px 60px;
+}
+.cbtn{
+    background-color: transparent;
+    font-size: 20px;
+    border: none;
+    outline:none;
+    border-radius: 50%;
+    color:#282F48;
+}
+.cbtn:hover{
+    background-color: #fefefe;
+}
+.shadow{
+    box-shadow: var(--shadow);
+}
+.infoHolder{
+    margin: 0 auto;
+    font-family:mainFont-req;
+   text-align: center;
+   width:fit-content;
+   padding:20px;
+}
+.price{
+    width:max(100px);
+    overflow-x:scroll;
+    border:none;
+    outline: none;
+    background-color: transparent;
+}
+.pincode{
+    width:95%;
+    border: none;
+    padding:10px;
+    height: 70px;
+    text-align: center;
+    margin:0 auto;
+    overflow: hidden;
+}
+.pincode::placeholder{
+    text-align: right;
+    padding: 20px;
+}
+.pinholder button{
+    position: relative;
+    top:70px;
+    float:left;
+    height: 70px;
+    box-shadow: var(--shadow);
+}
+.bbtn{
+    outline: none;
+    border:none;
+    background-color: #d35252;
+    padding:5px 10px;
+    border-radius: 10px;
+    height: 40px;
+    width:50px;
+}
+.bbtn img{
+    margin:auto;
+    width:90%;
+    height: 90%;
+}
+.product-footer{
+    font-size: 20px;
+    margin: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.inputHolder{
+    display: block;
+    width:100%;
+    margin:30px 0 ;
+    padding:10px;
+}
+.inputHolder input{
+    width:100%;
+    height:60px;
+    padding:10px;
+    border-radius: var(--rounded);
+    border:none;
+    outline:none;
+    text-align: center;
+}
+.inputHolder input::placeholder{
+    text-align: right;
+    padding-right: 10px;
+}
+.inputHolder label{
+    margin-right: 50px;
+}
+.formHolder{
+    text-align: right;
+    display: block;
+}
+.right{
+    float:right;
+}
+.text-red{
+    color: var(--subcolor);
+}
+.text-white{
+    color: var(--textColor);
+}
+.StoreAdmin ul{
+    list-style-type: none;
+}
+.StoreAdmin li{
+    font-family: mainFont-bold;
+    font-size: 16px;
+    width:280px;
+    padding:15px;
+    margin: 30px auto;
+}
+.StoreAdmin li:hover{
+    cursor: pointer;
+}
+.flex-col{
+    display: flex;
+    flex-direction: column;
+}
+.innerNav{
+    width: 99%;
+    height: 130px;
+    padding: 20px;
+    /* background-color: var(--subcolor); */
+    position: relative;
+    /* left: -20px; */
+    top:-25px;
+    margin: 0;
+    mix-blend-mode: normal;
+    border-end-end-radius: 70px;
+    border-end-start-radius: 70px;
+    
+}
+.clicked{
+    background-color: var(--subcolor);
+    color: var(--textColor);
+}
+
+.logoU{
+    width:450px;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding:5%;
+    border-radius: var(--rounded);
+}
+.logoU div{
+    width: 80%;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--rounded);
+    margin: 5px 0;
+}
+.logoU img:first-child{
+    width: 40%;
+    height: 40%;
+}
+.logoU input[type='range']::-moz-range-progress{
+     background-color: #000;
+}
+.logoinput{
+    display: inline;
+    cursor: pointer;
+}
+.logoinput{
+    width:170px;
+    height: 170px;
+}
+.logoform input{
+    opacity: 0;
+    height: 50px;
+    position: relative;
+    z-index: 1;
+    top:-100px;
+    /* width: 200px; */
+}
+.logoinput img{
+    width: 200px;
+    height: 200px;
+    margin-top: 8px;
 }
 /* PHone page start here */
 @media screen and (max-width:1024px){

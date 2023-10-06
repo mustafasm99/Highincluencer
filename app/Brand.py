@@ -3,7 +3,9 @@ from django.shortcuts import render,redirect
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+#Brand all requests 
 
+# home page of the prand
 @login_required
 def dashboard(e):
     brand = Brand.objects.filter(user = e.user).first()
@@ -13,7 +15,7 @@ def dashboard(e):
         'data':rqu,
     })
 
-
+# create stor for the brand 
 @login_required
 def CStor(e):
     if e.method == 'POST':
@@ -48,6 +50,7 @@ def CStor(e):
 def updateItem(e,id):
     pass 
 
+# CRUDS
 @login_required
 def deleteItem(e,id):
     x = item.objects.get(id = id)
@@ -83,6 +86,7 @@ def invoice(e):
         'data':data
     })
 
+# to crate the save list 
 
 @login_required
 def create_Slist(e):
@@ -91,6 +95,8 @@ def create_Slist(e):
     new.save()
     return redirect('branddashboard')
 
+
+# function to save influencer  in list 
 @login_required
 def save_inList(e , id):
     brand = Brand.objects.get(user = e.user)
@@ -103,6 +109,32 @@ def save_inList(e , id):
     savelis.save()
     return redirect('inf')
 
+
+# delete from saves list 
+def delete_from_list(e,list,inf):
+    slist = saveInfluncer.objects.get(id = int(list))
+    infe = Influencer.objects.get(id = inf)
+    slist.infl.remove(infe)
+    return redirect('listM')
+    
+    
+
+# to delete the save list 
+@login_required
+def delete_list (e,id):
+    
+    saveInfluncer.objects.get(id = id).delete()
+    return redirect ('listM')
+   
+# update save list 
+@login_required
+def update_slist(e,id):
+     name = e.POST['title']
+     x = saveInfluncer.objects.get(id = id)
+     x.title = name
+     x.save()
+     
+    
 @login_required
 def RequestInfluncer(e):
     brand = Brand.objects.get(user = e.user)
@@ -119,10 +151,40 @@ def RequestInfluncer(e):
         new.save()
         return redirect('inf')
     
-    
+
+##### list mangement function #######
+@login_required
 def list_management(e):
+    if e.method == 'POST':
+        print("posting")
+        if e.POST.get('addlist','none') != 'none':
+            # print('creating' , e.POST)
+            create_Slist(e)
+        elif e.POST.get('delete','none') != 'none':
+            delete_list(e,e.POST['delete'])
+            # print(e.POST)
+        elif e.POST.get('Edit','none') != 'none':
+            update_slist(e,e.POST['Edit'])
+        elif e.POST.getlist('deleteOne' , 'none') != 'none':
+            ll = e.POST['deleteOne'].split(',')
+            li = ll[1]
+            infl = ll[0]
+            delete_from_list(e,li,infl)
+        elif e.POST.getlist('id' , 'none') != 'none':
+            infl = e.POST.getlist('id')[0]
+            # e.POST['id'] = infl
+            RequestInfluncer(e)
+            
+            
+            
     brand = Brand.objects.get(user = e.user)
     lists = saveInfluncer.objects.filter(brand = brand).all()
     return render(e,"Brand/listmanagement.html",{
         'lists':lists,
     })
+    
+#   functon for each list  to return list 
+@login_required
+def xlist(e,id):
+    l = saveInfluncer.objects.get(id = id)
+    return render(e,'Brand/List.html',{'data':l})

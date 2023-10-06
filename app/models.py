@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from .utils import genrate_cod
 from coupon.models import *
 from django.utils.safestring import mark_safe
+import uuid
+from django.core.validators import validate_image_file_extension
 
 #tags model 
 class tags(models.Model):
@@ -11,7 +13,20 @@ class tags(models.Model):
     def __str__(self):
         return self.title
     
-
+class images(models.Model):
+    image = models.ImageField(upload_to='images')
+    
+    # display images in admin page 
+    
+    def name(self):
+        return mark_safe('<p>{}</p>'.format(self.image.name))
+    
+    def display_image(self):
+        html = "<img src ='{}' width='100' style='border-radius:50%;'>".format(self.image.url)
+        return mark_safe(html)
+    
+    def __str__(self):
+        return self.image.name
 
 #brand model
 class Brand(models.Model):
@@ -21,12 +36,42 @@ class Brand(models.Model):
     def __str__(self):
         return self.user.username
 
+#  evry things you need about stors 
 
+#    shops covers and models users offers here
+class shopscover(models.Model):
+    text = models.CharField(max_length=120,null=True,blank=True)
+    image = models.ManyToManyField(images , blank=True)
+    items = models.ManyToManyField('item' , blank=True)
+    
+
+    
+class shopsCat(models.Model):
+    name = models.CharField(max_length=20)
+    image =models.ImageField(upload_to='Stors_Cat/',null=True,blank=True)
+    
+    def __str__(self):
+        return self.name
+    
+class smedia(models.Model):
+    name = models.CharField(max_length=20)
+    link = models.URLField()
+    icon = models.ImageField(upload_to='storIcons/')
+
+    def __str__(self):
+        return self.name
 #Shop Model
 class shops(models.Model):
     Name = models.CharField(max_length=20)
     woner = models.OneToOneField(Brand,on_delete=models.CASCADE , null=True,blank = True)
-    
+    backgroundImage = models.ForeignKey(shopscover,on_delete=models.CASCADE,null=True ,blank=True)
+    mainColor = models.CharField(max_length=20,null=True,blank=True)
+    subColor = models.CharField(max_length=20,null=True,blank=True)
+    cats = models.ManyToManyField(shopsCat , blank=True)
+    shiping = models.FloatField(null=True,blank=True)
+    shiping2 = models.FloatField(null=True,blank=True)
+    sm = models.ManyToManyField(smedia,blank=True)
+    icon = models.FileField(upload_to='iconeimage/' , null=True , blank=True )
     def __str__(self):
         return self.Name
 
@@ -44,7 +89,7 @@ class category(models.Model):
 class item(models.Model):
     name = models.CharField(max_length=40)
     price = models.FloatField()
-    item_image = models.ImageField(upload_to='item_image/', blank=True , null=True)
+    item_image = models.ManyToManyField(images , null=True , blank=True)
     quintity = models.IntegerField(default = 0)
     sell_num = models.IntegerField(default = 0)
     shop = models.ForeignKey(shops,on_delete=models.CASCADE , blank=True , null = True)
@@ -53,7 +98,16 @@ class item(models.Model):
         return self.name
 
     def itemimage(self):
-        return mark_safe('<img src="{}" width="100">'.format(self.item_image.url))
+        html = "<ul>"
+        for i in self.item_image.all():
+            print(i.image.url)
+            if i.image:
+                html += "<li> <img src='{}' width='50'></li>".format(i.image.url)
+        html +="</ul>"
+        return mark_safe(html)
+    
+    def cover(self):
+        return self.item_image.first().image.url
 
 #IInfluencer - models 
 class Influencer(models.Model):
@@ -65,9 +119,10 @@ class Influencer(models.Model):
     post_number = models.IntegerField(null=True,blank=True)
     code = models.CharField(max_length=12,blank=True)
     time = models.DateField(auto_now = True)
-    expirDate = models.DateField()
+    expirDate = models.DateField(null=True , blank=True)
     block = models.BooleanField()
     text = models.TextField(null=True , blank=True)
+    Active = models.BooleanField(null=True , blank=True)
     tag = models.ManyToManyField(tags)
     engagemantRate = models.FloatField(null=True,blank=True)
     location = models.CharField(max_length=250,blank=True,null=True)
@@ -93,6 +148,42 @@ class Influencer(models.Model):
             html+="<li>{}</li>".format(i)
         html+="</ul>"
         return mark_safe(html)
+    
+    def postnum(self):
+        number = len(Post.objects.filter(influencer = self).all())
+        if number != 0:
+            return number
+        else: return 1
+    
+    def get_er(self):
+        er = 0
+        postnumber = self.postnum()
+        er = (((self.get_total_like() + self.get_total_communt())/self.postnum())/self.followers)*100
+        # for i in Post.objects.filter(influencer = self).all():
+        #     er += (i.like + i.comment_count  )
+        # result = ((er/postnumber) / self.followers)
+        return er
+    
+    def get_total_like(self):
+        total = 0
+        for i in Post.objects.filter(influencer = self).all():
+            total += i.like
+        return total
+    
+    def get_total_communt(self):
+        total = 0
+        for i in Post.objects.filter(influencer = self).all():
+            total += i.comment_count
+        return total
+    
+    def get_alike(self):
+            return self.get_total_like() / self.postnum()
+         
+    def get_acommunt(self):
+        return self.get_total_communt() / self.postnum()
+    
+    def get_commentRatio(self):
+        return (self.get_acommunt()/self.get_alike())*100
     
 ############ Influncer POSTs ##############
 class Post(models.Model):
@@ -158,14 +249,16 @@ class requests(models.Model):
 ############### Check out Class *****#####
 class checkout(models.Model):
     time = models.DateTimeField(auto_now = True, null = True , blank=True)
-    xitem = models.ForeignKey(item,on_delete=models.SET_NULL,null = True , blank=True)
+    xitem = models.ManyToManyField(item , blank=True)
     name = models.CharField(max_length = 25)
     phone_number = models.CharField(max_length = 15)
     email = models.CharField(max_length = 50)
-    locathion = models.CharField(max_length = 120)
+    city = models.CharField(max_length = 120)
+    current_city = models.CharField(max_length=140 ,null=True , blank=True)
     quantity = models.IntegerField(default = 1)
     note = models.TextField()
     copone = models.OneToOneField(Coupon , on_delete = models.CASCADE,null=True,blank=True)
+    shipPrice = models.FloatField(null=True , blank=True)
     total_price = models.FloatField()
 
     
@@ -173,15 +266,28 @@ class checkout(models.Model):
         return self.email
     
     def itemximage(self):
-        return mark_safe('<img src="{}" width="100">'.format(self.xitem.item_image.url))
+        return mark_safe('<img src="{}" width="100">'.format(self.xitem.cover()))
+    
+    def get_items(self):
+        html = "<ul>"
+        for i in self.xitem.all():
+            html += "<li> <img src={} width='50'></li>".format(i.cover())
+        html +="</ul>"
+        return mark_safe(html)
 #***********# CART #**************#
 class cart(models.Model):
     time = models.DateTimeField(auto_now = True)
     items = models.ManyToManyField(item)
-    adder = models.OneToOneField(User , on_delete=models.CASCADE)
+    adder = models.OneToOneField(User , on_delete=models.CASCADE , null=True , blank=True)
+    session_id = models.CharField(max_length=100 , default='none')
+    uid = models.UUIDField(default=uuid.uuid4 , editable=False)
+    
     
     def __str__(self):
-        return self.adder
+        if self.adder:
+            return self.adder.username
+        else:
+            return self.session_id
 
 
 class masterTable(models.Model):
@@ -208,6 +314,26 @@ class saveInfluncer(models.Model):
     def __str__(self):
         return self.title
     
+    def get_Account_data(self):
+        allfolw = 0
+        sumEng = 0 
+        Accounts = self.infl.all()
+        if len(Accounts) != 0:
+            for i in Accounts:
+               allfolw += int(i.followers)
+               sumEng += float(i.engagemantRate or 0)
+            avg = sumEng/len(Accounts)
+        else:
+            avg = 0
+               
+        data={
+            'Accounts':len(Accounts),
+            'all':allfolw,
+            'avg':avg,
+            'infs':Accounts,
+        }
+        return data
+    
 class influncerRequest(models.Model):
     maker = models.ForeignKey(Brand,on_delete=models.CASCADE)
     receiver = models.ForeignKey(Influencer,on_delete=models.CASCADE)
@@ -217,3 +343,7 @@ class influncerRequest(models.Model):
     
     def __str__(self):
         return str(self.maker) + "->" + str(self.receiver) 
+    
+
+
+    

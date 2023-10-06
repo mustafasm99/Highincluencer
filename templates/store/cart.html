@@ -1,89 +1,120 @@
 {%extends "base.html"%}
 {%load static%}
-{%block t%}Dashbord{%endblock%}
+{%block t%}CART{%endblock%}
 {%block body%}
-<div class="container-md m-auto my-5">
-    {%for j in data.items.all%}
-    <div class="container">
-        {%if j.item_image%}
-        <img src="{{j.item_image.url}}" alt="" class="img-fluid cart-image">
-        {%endif%}
-    </div> 
-    <div>
-      <button onclick="add('qt{{j.id}}')" type="button" class=""> + </button> 
-      <input type="number" name="qt" id="qt{{j.id}}" min="0" class="qtInput" placeholder="1">
-      <button onclick="sub('qt{{j.id}}')" type="button{{j.id}}"> - </button>
-       <br>
-    </div>
-    <div>
-        <form action="" method="post">
-            {%csrf_token%}
-            <button type="submit" name="delete" value="{{j.id}}" class="btn btn-dark my-2">
-                Delete
-            </button>
-        </form>
-    </div>
-    <div class="text-center">
-        <h1>
-            {{j.price}}
-        </h1>
-        <h1>
-            {{j.name}}
-        </h1>
-        <h1>
-            {{j.shop}}
-        </h1>
-    </div>
-    <br><hr>
+<div class="center m-auto p-3 container-md">
+  <form action="" method="post">
+    {%csrf_token%}
+    {%for i in data.items.all%}
+      <div class="rud flex p-1 itemincart sb" >
+        <div class="flex" style="flex:60%;">
+           <div class="itemimage">
+            {%if i.item_image.first%}
+              <img src="{{i.cover}}" alt="" class="cartimage">
+            {%endif%}
+           </div>
+           <div class="center" style="margin:auto 20px;">
+            <p>{{i.name}}</p>
+           </div>
+        </div>
+
+
+        <div class="flex" style="flex:28%; justify-content: space-around;">
+          <div class="cartButton center p-3" style="margin:auto;">
+            <button onclick="add('qt{{i.id}}' ,'{{i.price}}' , 'price{{i.id}}')" type="button" class=""> + </button> 
+            <input type="number" name="qt" id="qt{{i.id}}" min="0" max="{{i.quintity}}" class="qtInput" placeholder="1" value="1" onchange="qt(this.value , '{{i.price}}' ,'price{{i.id}}')">
+            <button onclick="sub('qt{{i.id}}' , '{{i.price}}' , 'price{{i.id}}')" type="button"> - </button>
+          </div>
+          <div class="flex center p-3 sb" style="margin:auto;">
+
+
+
+            <p style="margin: 20px 5px">
+              Total Price in IQD: <span><input id="price{{i.id}}" class="price" style="margin-top: 20px;" onchange="tprice()" value="{{i.price}}" readonly ></span>
+            </p>
+          </div>
+        </div>
+        <div style="flex:2%;">
+            <button class="cbtn" name="delete" value="{{i.id}}">X</button>
+        </div>
+      </div>
     {%endfor%}
-    
-    <button class="btn btn-dark" onclick="show('cout') ,baynow()" id="cdnbtn">
-        bay now 
-      </button>
-      <div class="container-md my-3 m-auto cout" id="cout" style="display: none;"> 
-        
-        <form action="" method="post" id="form">
-            {%csrf_token%}
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Phone Number</span>
-                </div>
-                <input type="text"  name="phone" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-              </div>
+      <div class="pal rud shadow center">
+        <div class="infoHolder center container-md">
+          <p>الفاتوره </p>
+          <div class="flex sb">
+            <div>
+              <p id="items">000000 IQD</p>
 
 
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Email</span>
-                </div>
-                <input name="email" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+              {%if stor.shiping and stor.shiping2%}
+              <p>
+                <label for="shping1">{{stor.shiping2}}   المحافضات  </label>
+              <input type="radio" name="shipping" id="shping1" class="shipping" value="{{stor.shiping2}}">
+              <label for="shping1">{{stor.shiping}} بغداد  </label>
+              <input type="radio" name="shipping" id="shping1" class="shipping" value="{{stor.shiping}}">
+              </p>
+              <p id="total">0000 IQD</p>
+                <script>
+                  items = 0.0
+                  main = document.getElementsByClassName('price')
+                  Array.from(main).forEach((e)=>{
+                    items += parseFloat(e.value)
+                  })
+                  document.getElementById('items').innerHTML = items + ' IQD'
+
+                  radio = document.getElementsByClassName('shipping')
+                  Array.from(radio).forEach((e)=>{
+                    e.addEventListener('click',()=>{
+                      total = items+parseFloat(e.value)
+                      document.getElementById('total').innerHTML = total + ' IQD'
+                    })
+                  })
+                </script>
+
+              {%else%}
+                <p><span id="ship" class="shipping">{{stor.shiping}}</span> <span>IQD</span></p>
+                <p id="total">0000 IQD</p>
+                <script>
+                  items = 0.0
+                  main = document.getElementsByClassName('price')
+                  Array.from(main).forEach((e)=>{
+                    items += parseFloat(e.value)
+                  })
+                  document.getElementById('items').innerHTML = items + ' IQD'
+                  
+                  total = document.getElementById('total')
+                  total.innerHTML = items + parseFloat('{{stor.shiping}}')
+                </script>
+                {%endif%}
+                
+                
               </div>
 
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Location</span>
-                </div>
-                <input name="loc" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+            <div style="display:block;">
+              <div>
+                <p>: المنتجات</p>
               </div>
+              <div>
+                {%if stor.shiping  and stor.shiping2 %}
+                  <p> : التوصيل</p>
+                {%else%}
+                  <p> : التوصيل</p>
+                {%endif%}
+              </div>
+              <div>
+                <p>: المجموع الكلي</p>
+              </div>
+            </div>
 
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Any Note's</span>
-                </div>
-                <input name="note" type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-              </div>
-
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Coupon</span>
-                </div>
-                <input type="text" name="cop" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
-              </div>
-                {%csrf_token%}
-                <button type="submit" class="btn btn-dark my-3" name="baynow" value="baynow">
-                  Bay Now
-                </button>
-              </form>
-    </div>
-</div>
-    {%endblock%}
+          </div>
+        </div>
+      </div>
+        <div class="container-md center" style="width:fit-content;margin:40px auto;">
+          <button class="Abtn" type="submit" name="next" value="next">
+            التالي
+          </button>
+          </form>
+        </div>
+  </div>
+{%endblock%}

@@ -1,15 +1,21 @@
+###
+#  deal with offers requests 
+#
+###
 from django.shortcuts import render , redirect
 from django.contrib.auth.models import User 
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+#! to display the offers 
 def offer(e):
     data = offers.objects.order_by("-startTime")
     return render(e,'offers/alloffers.html',{
         'data':data,
     })
 
+#! create the offer 
 @login_required
 def makeoffers(e):
     cat = category.objects.all()
@@ -29,8 +35,8 @@ def makeoffers(e):
         'cat':cat
     })
 
-# make offer for item #
 
+# make offer for item #
 @login_required
 def maike_item_offer(e):
     id = e.POST['offer']
@@ -42,13 +48,15 @@ def maike_item_offer(e):
     return redirect('stor')
 
 
-
+#! delete the offer on click
 @login_required
 def deleteoffer(e,id):
     x = offers.objects.filter(id = id).first()
     x.delete()
     return redirect('makeoffers')
 
+
+#! update the offer 
 @login_required
 def updateoffer(e,id):
     x = offers.objects.filter(id = id).first()
@@ -59,9 +67,11 @@ def updateoffer(e,id):
     x.save()
     return redirect('makeoffers')
 
+
+#! send requst of work 
 @login_required
 def send_request(e):
-    #try:
+    try:
         br = e.POST['woner']
         bra = User.objects.get(username = br)
         brand = Brand.objects.get(user = bra.id)
@@ -73,16 +83,18 @@ def send_request(e):
         new.influencer.add(inf)
         messages.add_message(e,messages.INFO,"your request has been sened")
         return redirect('alloffers')
-    # except:
-    #     messages.add_message(e,messages.INFO,"your request has been sened")
-    #     return redirect('alloffers')
+    except:
+        messages.add_message(e,messages.ERROR,"your request has not sened")
+        return redirect('alloffers')
 
+#! BRAND SIDE !!
+#! delete REQUEST 
 @login_required
 def delete_request(e,id):
     x = requests.objects.filter(id = id).first()
     x.delete()
     return redirect('branddashboard')
-
+#! accept request
 @login_required
 def Accept_request(e):
     id = e.POST['id']
@@ -93,7 +105,7 @@ def Accept_request(e):
         x.Accept = False
     x.save()
     return redirect('branddashboard')
-
+#! create CAtegory
 def Create_category(e):
     new = category(title = e.POST['Ncat'])
     new.save()

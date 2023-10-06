@@ -1,5 +1,6 @@
+# ! main page for deal with influncer Requests and data flow 
+# !
 from django.db.models import Q
-from types import NoneType
 from django.shortcuts import render , redirect , HttpResponse
 from django.contrib.auth.models import User 
 from .models import *
@@ -9,6 +10,8 @@ from django.core.files.base import ContentFile
 import requests
 from datetime import datetime
 import datetime
+
+NoneType = type(None)
 
 def infDashboard(e):
     return render(e,'influencer/dashboard.html',{})
@@ -76,7 +79,7 @@ def updateInf(e):
         return redirect('infacc')
     messages.add_message(e,messages.INFO,'Error')
     return redirect('infacc')
-
+#| we can use oop code to make the function below less code |#
 #|########################################|
 #|########## Analysis Function ###########|
 #|########################################|
@@ -196,4 +199,3 @@ def get_post(e):
     id = e.POST['id']
     x = Post.objects.get(id=id).media.url
     return HttpResponse(x)
-

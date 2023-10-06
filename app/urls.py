@@ -24,6 +24,7 @@ urlpatterns = [
    
    path('CStore',CStor,name='CStore'),
    path('STOR',store,name='stor'),
+   path('STOR/<str:brand>',stor_by_link,name='storBtLink'),
    path('delteItem/<int:id>',deleteItem,name='deleteitem'),
    path('influncerDashbord',infDashboard,name='influncerDashboard'),
    path('Brand-invoce',invoice,name='inv'),
@@ -33,6 +34,12 @@ urlpatterns = [
    path('List_Management',list_management,name="listM"),
    # Brand request influnecre 
    path('RequestInfluncer',RequestInfluncer,name='BRI'),
+   # delete list 
+   path('deleteList/<int:id>',delete_list,name='deletlist'),
+   #  each list 
+   path('list/<int:id>',xlist,name='list'),
+   # delete form list #
+   path('deleteFromList/<int:list>,<int:inf>',delete_from_list,name="deleteformlist"),
    ########## offers paths ###################
 
    path('alloffers',offer,name="alloffers"),
@@ -56,5 +63,10 @@ urlpatterns = [
    path('addToCart',addToCart,name='atc'),
    path('CART',Cart,name="cart"),
    path('byNow',byNow,name="byNow"),
-   path('get_post',get_post,name="PI")
+   path('get_post',get_post,name="PI"),
+   # for editing the store 
+   path('log',editlog,name="logo"),
+   path('cover', editCovers , name='cover'),
+   # for testing 
+   path('aside',aside,name='aside')
 ]  

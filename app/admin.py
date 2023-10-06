@@ -16,7 +16,7 @@ class usersinline(admin.StackedInline):
     extra = 1 
     fieldsets = (
         (None , {
-            'fields':('user','image','following','followers','post_number','block','text')
+            'fields':('user','image','following','followers','post_number','block','text' , 'Active')
         }),
     )
 
@@ -39,9 +39,20 @@ class users(admin.ModelAdmin):
     inlines = [usersinline,brandinline]
 
 class infl(admin.ModelAdmin):
-    list_display = ['user','teleuser','dimage','followers','following','code','block','post_number','tagss' , 'engagemantRate','location']
+    list_display = ['user','teleuser','dimage','followers','following','code','block','post_number','tagss' , 'engagemantRate','location' , 'Active']
     search_fields = ['user__username','code']
     list_editable = ['block','teleuser']
+    actions = ['active']
+    
+    def active(modeladmin , request , queryset):
+        for inf in queryset:
+            if inf.Active != True:
+                inf.Active = True
+            else:
+                inf.Active = False
+            inf.save()
+        
+        
 
 class bran(admin.ModelAdmin):
     list_display = ['user','teleuser','block']
@@ -69,7 +80,7 @@ class xshops(admin.ModelAdmin):
     inlines = [xitem]
 
 class check(admin.ModelAdmin):
-    list_display =['xitem','name','phone_number','email','locathion','quantity','copone','total_price','time','itemximage']
+    list_display =['get_items','name','phone_number','email','city','current_city','quantity','copone','total_price','time']
     search_fields = ['xitem__name','name','phone_number','email','copone__code']
 
 
@@ -96,7 +107,8 @@ class req(admin.ModelAdmin):
         telem(queryset.get().influencer.first().teleuser,"your Request is Prove by woner go to work")
         print(queryset.get().influencer.first().teleuser)
     
-        
+class Cimage(admin.ModelAdmin):
+    list_display = ['display_image','name']     
 
 
 admin.site.unregister(User)
@@ -115,3 +127,14 @@ admin.site.register(masterTable,MasterTable)
 admin.site.register(tags)
 admin.site.register(saveInfluncer)
 admin.site.register(influncerRequest)
+admin.site.register(shopsCat)
+admin.site.register(images , Cimage)
+admin.site.register(cart)
+admin.site.register(smedia)
+admin.site.register(shopscover)
+
+
+
+admin.site.site_title = " "
+admin.site.site_header = "Hinfluncer"
+admin.site.index_title = "Hinfluncer"

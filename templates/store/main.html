@@ -3,147 +3,269 @@
 {% load main_tag %}
 {%block t%}STOR{%endblock%}
 {%block body%}
-{%if user.is_authenticated%}
-    <h1 style="text-decoration:underline ;">
-        ALL ITEMS 
-    </h1>
-    <div class="container-md my-5">
-        <div class="gridHolder">
-            {%for i in data%}          
-                <div class="items" id="item{{i.id}}">
-                    {% if user|type == 'Influencer'%}
-                    <form action="{% url 'mioffer'%}" method="post">
-                        {% csrf_token %}
-                        <button class="btn" name="offer" value="{{i.id}}">
-                            make_offer
-                        </button>
-                    </form>
-                    {%endif%}
-                    {% if i.item_image%}
-                        <img src="{{ i.item_image.url }}" alt="" class="Store_image"  id="{{i.id}}">
-                    {%endif%}
-                    <div class="info container-md my-1">
-                        {{i.price}}
-                        {{i.name}}
-                    </div>
-                    <script>
-                        x = document.getElementById('{{i.id}}').addEventListener('click',()=>{
-                            window.location = "{% url 'sitem' id=i.id%}"
-                        })
-                    </script>
+{%block style%}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
+{%endblock%}
+{% comment %} that for the admin aside  {% endcomment %}
+<style>
+    .subcolor{
+        background-color:{{store.subColor}};
+    }
+    .sub{
+        color:{{store.subColor}};
+    }
+    .main{
+        color:{{store.mainColor}};
+    }
+    .maincolor{
+        background-color: {{store.mainColor}};
+    }
+    .clicked{
+        background-color: {{store.mainColor}};
+        color:{{store.subColor}};
+    }
+    .editrange::-moz-range-thumb{
+        background-color: black;
+    }
+</style>
+<div class="flex row">
+    {%if admin%}
+    
+
+    <div class="flex" style="width:100%;flex-wrap: nowrap;">
+        <div class="" style="width:400px;margin-right:40px;">
+            <aside class="dsaside rud flex-col" id="aside" style="position:relative;padding:0px;" >
+                <div class="innerNav center maincolor">
+                    <h1 class="sub">
+                        {{store}}
+                    </h1>
                 </div>
-                <script>
-                    document.getElementById('item{{i.id}}').addEventListener(
-                        "contextmenu",(e)=>{                           
-                            oncontextmenu = (e) => {
-                                item = document.getElementById('item{{i.id}}')
-                                e.preventDefault()
-                                let menu = document.createElement("div")
-                                menu.id = "ctxmenu"
-                                menu.classList.add('ctxmenu')
-                                menu.style = `top:${e.clientY}px;left:${e.clientX}px`
-                                menu.onmouseleave = () => ctxmenu.outerHTML = ''
-                                menu.innerHTML = `
-                                <form method="post" action="{%url 'atc'%}" >
-                                {%csrf_token%}
-                                <input type="number" min="0" name="qt" placeholder="Quintity" style="width:fit-cover;"> 
-                                <button type="submit" class="btn btn-dark" name="item" value="{{i.id}}"> Add To Cart </button> 
-                                    </form>
-                                `
-                                document.body.appendChild(menu)
-                                }
-                        }
-                    )
-                </script>
-            {%endfor%}
+                <div class="StoreAdmin">
+                    <ul class="center text-red actions main">
+                        <li class="center shadow rud">
+                            <h3> <a id="logo"> Add LOGO </a></h3>
+                        </li>
+                        
+                        <li class="center shadow rud">
+                            <h3> <a id="cover"> Add Cover </a> </h3>
+                        </li>
+                        <li class="center shadow rud">
+                            <h3> Add Category </h3>
+                        </li>
+                        <li class="center shadow rud">
+                            <h3> <a> Add Product</a> </h3>
+                        </li>
+                        <li class="center shadow rud">
+                            <h3> <a> Footer Edit</a> </h3>
+                        </li>
+                        <li class="center shadow rud">
+                            <h3> <a> Theme Edit </a> </h3>
+                        </li>
+                    </ul>
+                </div>
+            </aside>  
         </div>
-    </div>
-{%else%}
-<h1 style="text-decoration:underline ;">
-    ALL ITEMS 
-</h1>
-<div class="container-md my-5 m-auto gridHolder">
-    {%for i in data%}
-    <div class="items" id="{{i.id}}">
-        {%if i.item_image%}
-        <img src="{{i.item_image.url}}" alt="" class="Store_image">
-        {%endif%}
-        <div class="item-info">
-            <p id="price">{{i.price}}</p>
-            <p>{{i.Name}}</p>
+        <div style="max-width:100%;width:100%;">
+            <div class="nav-bar maincolor" style="position:stitc;">
+                <div>
+                   <img src="{{store.icon.url}}" alt="">
+                </div>
+                <div class="second-logos">
+                    <img src="{%static 'icons/mag.svg'%}" alt="">
+                    <a href="{%url 'cart'%}"><img src="{%static 'icons/Vector.svg'%}" alt=""></a>
+                    <img src="{%static 'icons/Grop.svg'%}" alt="">
+                </div>
+            </div>
+            <div class="main" id="main">
+
+            </div>
         </div>
     </div>
     <script>
-        count = 0;
-        document.getElementById('{{i.id}}').addEventListener(
-            "click",()=>{
-                if(count == 0){
-                    document.getElementById('{{i.id}}').classList.add('selected')
-                    count++;
-                        }
-                        else{
-                            document.getElementById('{{i.id}}').classList.remove('selected')
-                            count--;
-                        }
-                    }
-                    )
-                    </script>
-        {%endfor%}
-    </div>
-    <div class="container-md m-auto forms">
-        <button class="btn btn-dark" onclick="baynowx(),show('bayform')">
-            bynow
-        </button>
-        <div id="bayform" style="display:none;">
-            <form action="{%url 'byNow'%}" method="post">
-                {%csrf_token%}
-                <div class="gridHolder m-5 " id="sitems">
+        logo = document.getElementById('logo')
+        logo.addEventListener('click',()=>{
+            $.ajax({
+                type:"GET",
+                url:"{%url 'logo'%}",
+                success:(html)=>{
+                    main = document.getElementById("main")
+                    main.innerHTML = html
+                }
+            })
+        })
+
+        cover = document.getElementById('cover')
+        cover.addEventListener('click' , ()=>{
+            $.ajax({
+                type:"GET",
+                url:"{%url 'cover'%}",
+                success:(html)=>{
+                    main = document.getElementById("main")
+                    main.innerHTML = html
+                }
+            })
+        })
+
+    </script>
+    {%else%}
+    <div>
+        <div class="nav-bar maincolor sub">
+            <div>
+               <img src="{{store.icon.url}}" alt="">
+            </div>
+                    <div class="second-logos">
+                        <img src="{%static 'icons/mag.svg'%}" alt="">
+                        <a href="{%url 'cart'%}"><img src="{%static 'icons/Vector.svg'%}" alt=""></a>
+                        <img src="{%static 'icons/Grop.svg'%}" alt="">
+                    </div>
+            </div>
+            <!--slider-->
+            <div class="container">
+                <!-- Slider main container -->
+                <div class="swiper" style="width:90%;height:500px;margin:auto;">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper rud" style=" border-radius:30px;">
+                        <!-- Slides -->
+                        {%if store.backgroundImage%}
+                            {%if store.backgroundImage.image%}
+                                {%for i in store.backgroundImage.image.all%}
+                                <div class="swiper-slide" style="width:100%; height:60%; object-fit:cover;">
+                                    <img src="{{i.image.url}}" alt="">
+                                </div>
+                                {%endfor%}
+                            {%elif store.backgroundImage.items%}
+                                {%for i in store.backgroundImage.items.all%}
+                                    <div class="swiper-slide" style="background-image:url({{i.cover}})">
+                                        <pre>
+                                            {{store.backgroundImage.text}}
+                                        </pre>
+                                    </div>
+                                {%endfor%}
+                            {%endif%}
+                        {%endif%}
+                    </div>
+            
+                    <div class="swiper-pagination"></div>
+                    <div class="swiper-button-prev" style="color:#f2f2f2;"></div>
+                    <div class="swiper-button-next"  style="color:#f2f2f2;"></div>
+            
+            
                 </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Email</span>
-                    </div>
-                    <input name="email" type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Full Name</span>
-                    </div>
-                    <input type="text" name="name" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
-                </div>
-                
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon1">Phone Number</span>
-                    </div>
-                        <input type="text" name="phone" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Location</span>
-                        </div>
-                        <input type="text" name="loc" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Coupon</span>
-                        </div>
-                        <input type="text" name="cop" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
-                    </div>
-                    
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon1">Note</span>
-                </div>
-                <input type="text" name="note" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+            
             </div>
             
-            <button type="submit" class="btn btn-dark m-auto my-5">submit</button>
-        </div>
-    </form>
-    </div>
-{%endif%}
-    {%endblock%}
+            <div class="sectionx">
+               {%for i in store.cats.all%}
+                    <a href="#" class="maincolor sub">{{i}}</a>
+               {%endfor%}
+            </div>
+            
+            
+            <div class="line sectionline ">
+                <h2>
+                    <span id="growth_section" class="" style="color:black;">products</span>
+                </h2>
+            </div>
+            
+            <!-- product card-->
+            
+            <div class="grid center" style="margin:10px auto; width:70%; padding: 5px;">
+                {%for i in data%}
+                <div class="itemx subcolor">
+                    <div class= "image-container center  sr">
+                        <img src="{{i.cover}}" alt="">
+                    </div>
+                    <div class="product-footer sb ">
+                        <div>
+                            <span class="main">{{i.name}}</span>
+                        </div>
+                       <div>
+                        <form action="" method="post">
+                            {%csrf_token%}
+                            <button class="bbtn maincolor sub" name="item" value="{{i.id}}" >
+                            <img type="submit" src="{%static 'icons/Vector.svg'%}" alt="" >
+                           </button>
+                        </form>
+                       </div>
+                    </div>
+                    <div class="product-price maincolor">
+                    <span>
+                       {{i.price}}
+                    </span>
+                    </div>
+                </div>
+                {%endfor%}
+            
+            <div>
+            
+            </div>
+            
+            
+            </div>
+            <div class="brandStorFootre flex-w rud-top maincolor sub" >
+                <div class="container center">
+                    <div class="footer-icon">
+                        {%if store.icon%}
+                            <img src="{{store.icon.url}}" alt="">
+                        {%endif%}
+                    </div>
+                </div>
+        
+                <div class="container">
+                    <div class="row center" style="height:fit-content;margin:auto;">
+                        <div class="center">
+                            <h3>Follow us</h3>
+                        </div>
+                        <div class="flex sr">
+                            {%for i in store.sm.all%}
+                                <div class="smicon">
+                                    {%if i.icon%}
+                                        <img src="{{i.icon.url}}" alt="">
+                                    {%endif%}
+                                    <p style="font-size:smaller;">
+                                        {{i}}
+                                    </p>
+                                </div>
+                            {%endfor%}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container center row" style="height:fit-content;margin:auto;">
+                    <div class="center m-3">
+                        <h3>
+                            Vist us
+                        </h3>
+                    </div>
+                    <div class="center m-3">
+                        <h3>
+                            Brand Address
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <script>
+                const swiper = new Swiper('.swiper', {
+                    autoplay:{
+                        delay:3000,
+                        disableOnInteraction: false,
+                    },
+            
+                    loop: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+            
+            
+                });
+            </script>
+     </div>
+    {%endif%}
+</div>
+{%endblock%}

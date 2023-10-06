@@ -2,14 +2,105 @@
 {% load static %}
 {%block t%}Brand{%endblock%}
 {%block body%}
-<div>
-    <h1 class="m-auto my-5">List management</h1>
-    {%for i in lists%}
-        <div class="mainList">
-            <h1>
-                {{i.title}}
-            </h1>
+<div class="flex" style="justify-content: space-between;">
+    <div class='aside'>
+        <div class="listheader">
+            <h1 class="m-auto my-5">Managing List</h1>
         </div>
-    {%endfor%}
+        <div class="listHolder">
+            <ul>
+                {%for i in lists%}
+                    <li class="list">
+                        <h5 id="{{i.id}}" class="lname">{{i.title}}</h5>
+                        <div class="subbtn">
+                            <button>
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </button>
+                            <div class="submenu" style="padding:20px;">
+                                <form action="" method="post">
+                                    {%csrf_token%}
+                                    <button type="submit" name="delete" value="{{i.id}}">Delete</button>
+                                    <div class="input flex" >
+                                        <input type="text" name="title" placeholder="{{i.title}}" style="width:100px;">
+                                        <button type="submit" name="Edit" value="{{i.id}}">submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+
+                    
+                {%endfor%}
+                <script>
+                    list = Array.from(document.getElementsByClassName('list'))
+                    list.forEach((e)=>{
+                        e.addEventListener('click',()=>{
+                            list.forEach((i)=>{
+                                if(i.classList.contains('preas')){
+                                    i.classList.remove('preas')
+                                }
+                            })
+                            e.classList.add('preas')
+                        })
+                    })                 
+                </script>
+            </ul>
+        </div>
+        <div class="addList">
+            <div class="flex">
+                <div class="subbtn">
+                    <i class="fa-solid fa-plus" style="position:relative; left:100%;margin:auto;"></i>
+                    <div class="submenu" style="margin-top:-100px">
+                        <form action="" method="post">
+                            {%csrf_token%}
+                            <div class="input">
+                                <input type="text" name="title" placeholder="Name">
+                                <button type="submit" name="addlist" value="true">submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div> 
+                <div >
+                    <h3 style="text-align:left;margin-left:-18%;">Create New</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- div to display on click  -->
+
+    <div class="mainlist" >
+        <div id="main">
+
+        </div>
+    </div>
+
 </div>
+<!-- js  -->
+<script>
+    main = document.getElementsByClassName('lname')
+    Array.from(main).forEach((e)=>{
+        e.addEventListener('click',()=>{
+            
+            id = e.id
+            $.ajax({
+                type:'GET',
+                url:`list/${id}`,
+                data:{
+                    'csrfmiddlewaretoken': document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                },
+                success:function(html){
+                    div = document.createRange().createContextualFragment(html)
+                    if (document.getElementById('listdata')){
+                        document.getElementById('listdata').remove()
+                        document.getElementById('main').append(div);
+                    }else{
+                        document.getElementById('main').append(div);
+                    }
+                }
+            })
+        })
+    })
+</script>
 {%endblock%}

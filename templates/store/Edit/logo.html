@@ -1,0 +1,19 @@
+{%load static%}
+<div class="container center m-5">
+    <div class="logoU">
+        <div class="center" style="background-color: {{data.mainColor}};">
+            <img src="{{data.icon.url}}" alt="image Not found" style="margin:auto;" id="icon">
+        </div>
+
+        <!-- <input type="range" name="" id="range" min="50" max="150" class="editrange" oninput="imagesize('icon')"> -->
+        
+        <label for="logo" class="logoinput">
+            <img class="main" id="action" src="{%static 'icons/storeEdit/cloud.svg'%}" alt="">
+        </label>
+        <form action="{%url 'logo'%}" method="post" class="logoform" enctype="multipart/form-data" id="form">
+            {%csrf_token%}
+            <input type="file" name="logo" id="logo" onchange="submit()"/>
+        </form>
+    </div>
+    
+</div>
